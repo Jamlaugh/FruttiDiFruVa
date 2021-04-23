@@ -1,0 +1,39 @@
+﻿@model FruttiDiFruVa.Models.ArticleItem
+@using System.Reflection 
+@using System.ComponentModel.DataAnnotations 
+
+@{
+    ViewData["Title"] = "ArticleList";
+}
+
+<h1>Article Details</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Property
+            </th>
+            <th>
+                Value
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var property in Model.GetType().GetProperties())
+        {
+            var display = property.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
+
+            <tr>
+                <td>
+                    @display.Name
+                </td>
+                <td>
+                    @property.GetValue(Model)
+                </td>
+            </tr>
+
+        }
+    </tbody>        
+</table>
