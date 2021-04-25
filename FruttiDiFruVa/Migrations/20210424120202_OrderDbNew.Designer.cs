@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FruttiDiFruVa.Migrations
 {
     [DbContext(typeof(OrderDb))]
-    [Migration("20210423093723_Order")]
-    partial class Order
+    [Migration("20210424120202_OrderDbNew")]
+    partial class OrderDbNew
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,29 +21,61 @@ namespace FruttiDiFruVa.Migrations
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("FruttiDiFruVa.Models.Article", b =>
+            modelBuilder.Entity("FruttiDiFruVa.Models.ArticleItem", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Apple")
+                    b.Property<string>("ArticleGroupName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Banana")
+                    b.Property<string>("ArticleGroupNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Kiwi")
+                    b.Property<string>("ArticleName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Caliber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Checked")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Colli")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("DetailArticleNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MainArticleNumber")
+                        .HasColumnType("int");
 
                     b.Property<int?>("OrderID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Strawberry")
+                    b.Property<string>("OriginCountry")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.Property<string>("OwnBrand")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PackageSize")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RowVersion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SearchQuery")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TradeClass")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Variety")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderID");
 
@@ -57,8 +89,8 @@ namespace FruttiDiFruVa.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
+                    b.Property<string>("Amount")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
@@ -71,7 +103,7 @@ namespace FruttiDiFruVa.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("FruttiDiFruVa.Models.Article", b =>
+            modelBuilder.Entity("FruttiDiFruVa.Models.ArticleItem", b =>
                 {
                     b.HasOne("FruttiDiFruVa.Models.Order", null)
                         .WithMany("Articles")

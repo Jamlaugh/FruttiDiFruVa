@@ -7,10 +7,9 @@ namespace FruttiDiFruVa.Models
 {
     public class Order
     {
-        public int ID { get; set; }
-        public string Recipient { get; set; }
+        public int Id { get; set; }
+        public Guid RecipientId { get; set; }
         public DateTime DeliveryDate { get; set; }
-
         public List<ArticleItem> Articles { get; set; }
     }
 }

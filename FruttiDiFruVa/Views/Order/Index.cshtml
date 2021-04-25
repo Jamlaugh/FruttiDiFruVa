@@ -1,0 +1,68 @@
+﻿@model FruttiDiFruVa.Models.OrderViewModel
+
+@{
+    ViewData["Title"] = "ArticleList";
+}
+
+<h1>Article List</h1>
+
+@using (Html.BeginForm("Submit", "Order", FormMethod.Post, new { id = "form-order", onsubmit = "prepareModel()" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.Order, new { id = "selected-order" })
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Auswahl
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ArticleItems.First().ArticleName)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ArticleItems)
+            {
+                var parms = new Dictionary<string, string>
+            {
+                    { "Id", item.Id.ToString() }
+                };
+                <tr>
+                    <td>
+                        <input class="checkbox" type="checkbox" onchange="checkboxChanged(this);" />
+                    </td>
+                    <td>
+                        <a data-id="@item.Id" asp-controller="Articles" asp-action="Details" asp-all-route-data="parms">@item.ArticleName</a>
+                    </td>
+                    <td>
+                        <input type="number" min="1" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+        <div class="form-group w-25">
+            @Html.DisplayNameFor(x => x.DeliveryDate)
+            @Html.TextBoxFor(m => m.DeliveryDate, new
+            {
+                @class = "datepicker form-control d-block",
+                style = "padding-right: 0.25rem;",
+                id = "txtBoxDeliveryDate",
+                placeholder = "dd.mm.yyyy",
+                onkeydown = "return (event.which == 8 || event.which == 46)",
+                value = DateTime.Now.Date
+            })
+        </div>
+        <div class="form-group w-25">
+            @Html.DisplayNameFor(x => x.RecipientId)
+            @Html.DropDownListFor(x => x.RecipientId, Model.Recipients, "Please select a recipient", new { id = "ddl-recipient", required = "", @class = "d-block" })
+        </div>
+
+    <div class="text-danger">
+        @Html.ValidationSummary()
+    </div>
+    <button type="submit">Order</button>
+}

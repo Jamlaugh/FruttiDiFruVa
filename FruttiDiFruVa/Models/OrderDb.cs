@@ -13,7 +13,7 @@ namespace FruttiDiFruVa.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"(Server=ASSESSMENT\SQLEXPRESS;Database=FruVa_Assessment_Orders;User Id=assessment;Password=AssessmentFruVa2021#;)");
+            optionsBuilder.UseSqlServer(@"Server=ASSESSMENT\SQLEXPRESS;Database=FruVa_Assessment_Orders;User Id=assessment;Password=AssessmentFruVa2021#;");
         }
     }
 }

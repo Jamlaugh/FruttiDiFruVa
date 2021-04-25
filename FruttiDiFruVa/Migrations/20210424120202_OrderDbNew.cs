@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FruttiDiFruVa.Migrations
 {
-    public partial class Order : Migration
+    public partial class OrderDbNew : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +13,8 @@ namespace FruttiDiFruVa.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<int>(type: "int", nullable: false),
                     Recipient = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -26,17 +26,27 @@ namespace FruttiDiFruVa.Migrations
                 name: "Articles",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Banana = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Apple = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Strawberry = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Kiwi = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Checked = table.Column<bool>(type: "bit", nullable: false),
+                    ArticleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MainArticleNumber = table.Column<int>(type: "int", nullable: false),
+                    DetailArticleNumber = table.Column<int>(type: "int", nullable: false),
+                    PackageSize = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ArticleGroupNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ArticleGroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OriginCountry = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TradeClass = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Colli = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Caliber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Variety = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnBrand = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SearchQuery = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RowVersion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Articles", x => x.ID);
+                    table.PrimaryKey("PK_Articles", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Articles_Orders_OrderID",
                         column: x => x.OrderID,

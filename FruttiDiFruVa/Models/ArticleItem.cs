@@ -8,8 +8,7 @@ namespace FruttiDiFruVa.Models
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
-        [Display(Name = "Auswahl")]
-        public bool Checked { get; set; }
+        public int Amount { get; set; }
 
         [Display(Name = "Product Name")]
         public string ArticleName { get; set; }
