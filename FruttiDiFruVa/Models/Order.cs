@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FruttiDiFruVa.Models
 {
     public class Order
     {
+        [Key]
         public int Id { get; set; }
         public Guid RecipientId { get; set; }
         public DateTime DeliveryDate { get; set; }
-        public List<ArticleItem> Articles { get; set; }
+        public ICollection<ArticleItem> Articles { get; set; }
+        
+        [NotMapped]
+        public string RecipientName { get; set; }
     }
 }

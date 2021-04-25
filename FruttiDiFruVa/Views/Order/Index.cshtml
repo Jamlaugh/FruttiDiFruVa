@@ -1,68 +1,62 @@
-﻿@model FruttiDiFruVa.Models.OrderViewModel
+﻿@model List<FruttiDiFruVa.Models.Order>
 
 @{
-    ViewData["Title"] = "ArticleList";
+    ViewData["Title"] = "OrdersList";
 }
 
-<h1>Article List</h1>
+<h1>OrdersList</h1>
 
-@using (Html.BeginForm("Submit", "Order", FormMethod.Post, new { id = "form-order", onsubmit = "prepareModel()" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.HiddenFor(x => x.Order, new { id = "selected-order" })
+<p>    
+    <a asp-controller="Shop" asp-action="Index">Shop</a>
+</p>
 
-    <table class="table">
-        <thead>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Order Id
+            </th>
+            <th>
+                Delivery Date
+            </th>
+            <th>
+                Articles
+            </th>
+            <th>
+                Recipient
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
             <tr>
-                <th>
-                    Auswahl
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ArticleItems.First().ArticleName)
-                </th>
+                <td>
+                    @order.Id
+                </td>
+                <td>
+                    @order.DeliveryDate.ToShortDateString()
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var item in order.Articles)
+                        {
+                            <li>
+                                @item.ArticleName (Amount: @item.Amount)
+                            </li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    @order.RecipientName
+                </td>
+                <td>
+                    <a asp-controller="order" asp-action="Edit" asp-route-id="@order.Id">Edit</a>
+                    <a asp-controller="order" asp-action="Delete" asp-route-id="@order.Id">Delete</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.ArticleItems)
-            {
-                var parms = new Dictionary<string, string>
-            {
-                    { "Id", item.Id.ToString() }
-                };
-                <tr>
-                    <td>
-                        <input class="checkbox" type="checkbox" onchange="checkboxChanged(this);" />
-                    </td>
-                    <td>
-                        <a data-id="@item.Id" asp-controller="Articles" asp-action="Details" asp-all-route-data="parms">@item.ArticleName</a>
-                    </td>
-                    <td>
-                        <input type="number" min="1" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-        <div class="form-group w-25">
-            @Html.DisplayNameFor(x => x.DeliveryDate)
-            @Html.TextBoxFor(m => m.DeliveryDate, new
-            {
-                @class = "datepicker form-control d-block",
-                style = "padding-right: 0.25rem;",
-                id = "txtBoxDeliveryDate",
-                placeholder = "dd.mm.yyyy",
-                onkeydown = "return (event.which == 8 || event.which == 46)",
-                value = DateTime.Now.Date
-            })
-        </div>
-        <div class="form-group w-25">
-            @Html.DisplayNameFor(x => x.RecipientId)
-            @Html.DropDownListFor(x => x.RecipientId, Model.Recipients, "Please select a recipient", new { id = "ddl-recipient", required = "", @class = "d-block" })
-        </div>
-
-    <div class="text-danger">
-        @Html.ValidationSummary()
-    </div>
-    <button type="submit">Order</button>
-}
+        }
+    </tbody>
+</table>

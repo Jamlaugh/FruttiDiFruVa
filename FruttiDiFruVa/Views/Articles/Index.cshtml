@@ -24,16 +24,17 @@
         @foreach (var property in Model.GetType().GetProperties())
         {
             var display = property.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
-
-            <tr>
-                <td>
-                    @display.Name
-                </td>
-                <td>
-                    @property.GetValue(Model)
-                </td>
-            </tr>
-
+            if (display != null)
+            {
+                <tr>
+                    <td>
+                        @display.Name
+                    </td>
+                    <td>
+                        @property.GetValue(Model)
+                    </td>
+                </tr>
+            }
         }
     </tbody>        
 </table>

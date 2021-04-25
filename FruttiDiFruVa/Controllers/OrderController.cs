@@ -1,16 +1,13 @@
-﻿using FruttiDiFruVa.Models;
+﻿using FruttiDiFruVa.Helpers;
+using FruttiDiFruVa.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace FruttiDiFruVa.Controllers
 {
@@ -24,79 +21,70 @@ namespace FruttiDiFruVa.Controllers
         }
 
         public IActionResult Index()
-        {
-            OrderViewModel orderModel = new OrderViewModel();
+        {            
+            var orders = ApiHelper.GetAndSetApiValues();
 
-            orderModel.ArticleItems = GetArticleItems(20);
-            var recipients = GetAllRecipients();
-
-            orderModel.Recipients = new SelectList(recipients, "Id", "Name");
-
-            return View(orderModel);
+            return View(orders);
         }
 
-        public IActionResult Submit(OrderViewModel model)
+        public IActionResult Edit(int id)
         {
+            Order order;
+
+            using (var dbContext = new OrderDb())
+            {
+                order = dbContext.Orders
+                    .Include(x => x.Articles)
+                    .Where(x => x.Id == id)
+                    .First();
+            }
+
+            return View("~/Views/Order/Edit.cshtml", order);
+        }
+
+        public IActionResult SubmitEdit(Order model)
+        {
+            Order order;
+
             if (ModelState.IsValid)
             {
-                var selectedArticles = model.Order.Split(',') as IEnumerable<string>;
-
-                Order order = new Order();
-                order.Articles = new List<ArticleItem>();
-
-                foreach (var articleAmountItem in selectedArticles)
+                using (var dbContext = new OrderDb())
                 {
-                    order.Articles.Add(new ArticleItem
-                    {
-                        Id = new Guid(articleAmountItem.Split(':')[0]),
-                        Amount = Convert.ToInt32(articleAmountItem.Split(':')[1])
-                    });
+                    order = dbContext.Orders
+                        .Include(x => x.Articles)
+                        .Where(x => x.Id == model.Id)
+                        .First();
+
+                    order.DeliveryDate = model.DeliveryDate;
+
+                    dbContext.SaveChanges();
                 }
 
-                order.DeliveryDate = model.DeliveryDate;
-                order.RecipientId = new Guid(model.RecipientId);
+                var orders = ApiHelper.GetAndSetApiValues();
 
-                //TODO Order in DB speichern
-
-
-                return View("OrdersList");
+                return View("~/Views/Order/index.cshtml", orders);
             }
 
-            OrderViewModel orderModel = new OrderViewModel();
-
-            orderModel.ArticleItems = GetArticleItems(20);
-            var recipients = GetAllRecipients();
-            orderModel.Recipients = new SelectList(recipients, "Id", "Name");
-
-            return View("~/Views/Order/Index.cshtml", orderModel);
+            return View("~/Views/Order/Edit.cshtml", model);
         }
 
-        private IEnumerable<ArticleItem> GetArticleItems(int take)
+        public IActionResult Delete(string id)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://localhost:8080/api/articles");
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "GET";
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            using (var dbContext = new OrderDb())
             {
-                var result = streamReader.ReadToEnd();
-                return JsonConvert.DeserializeObject<IEnumerable<ArticleItem>>(result).Take(take);
-            }
-        }
+                var orderToRemove = dbContext.Orders.Include(x => x.Articles)
+                    .Where(x => x.Id.ToString().Equals(id))
+                    .First();
 
-        private IEnumerable<Recipient> GetAllRecipients()
-        {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://localhost:8080/api/recipients");
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "GET";
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                var result = streamReader.ReadToEnd();
-                return JsonConvert.DeserializeObject<IEnumerable<Recipient>>(result);
+                var articleItemsToRemove = orderToRemove.Articles;
+                
+                dbContext.Orders.Remove(orderToRemove);
+                dbContext.SaveChanges();
             }
+
+            var orders = ApiHelper.GetAndSetApiValues();
+
+            return View("~/Views/Order/index.cshtml", orders);
         }
 
         public IActionResult Details(string Id)

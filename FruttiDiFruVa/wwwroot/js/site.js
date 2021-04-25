@@ -16,7 +16,7 @@ function prepareModel() {
         var articleId = $(this).parent().parent().find("a").data("id");
         var amount = $(this).parent().parent().find("input[type=number]").val();
 
-        $("#selected-order").val($("#selected-order").val() + articleId + "Sadegh" + amount + ",");
+        $("#selected-order").val($("#selected-order").val() + articleId + ":" + amount + ",");
     });
 
     // remove last comma
