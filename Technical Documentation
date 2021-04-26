@@ -1,0 +1,7 @@
+Trechnical Documentation:
+Creating Web Application for an Order (No WPF)
+Application contains 3 main sites (Index, Shop, Order)
+Choosen Bootstraps for Datepicker for a few views
+Choosen javascript for sending multiple selection of combo box to Controller(s)
+API Webrequest für fetching Data of Articles and Recipients from another server
+Implemented EntityFramework Technology for reading and writing Data to Database/SQL Server 
